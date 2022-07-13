@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- this was written by me Shrinivas Iyengar, but this seems to not give me the 
+      the desired results so created a backup and trying something elese for now -->
+<!-- this seems to work now as is, the problem was not found but maybe it is not here -->
+<launch>
+    <arg name="worlds_path"                 default="$(find smb_highlevel_controller)/worlds" />
+    <arg name="world"                       default="singlePillar" />
+    <arg name="worlds_file"                 default="$(arg worlds_path)/$(arg world).world" />
+    <arg name="laserEnable"                 default="true" />
+    <arg name="laser_scan_min_height"       default="-0.2"/>
+    <arg name="laser_scan_max_height"       default="1.0"/>
+    <arg name="gui_hp"                      default="true" />
+    
+    <include file="$(find smb_gazebo)/launch/smb_gazebo.launch">
+        <arg name="world_file"              value="$(arg worlds_file)" />
+        <arg name="laser_enabled"           value="$(arg laserEnable)" />
+        <arg name="laser_scan_min_height"   value="$(arg laser_scan_min_height)" />
+        <arg name="laser_scan_max_height"   value="$(arg laser_scan_max_height)" />
+        <arg name="run_gui"                 value="$(arg gui_hp)" />
+    </include>
+
+
+    <!-- launch-prefix="xterm -e gdb args"  -->
+    <!-- removed teleop keyboard to include an automated moving robot -->
+    <!-- <node name="teleop_twist_keyboard" pkg="teleop_twist_keyboard" 
+          type="teleop_twist_keyboard.py" launch-prefix="xterm -e" output="screen" /> -->
+    
+    <!-- launch the husky HL node, and specify where to get the parameters from. -->
+    <node name="controlled_husky" pkg="smb_highlevel_controller" type="smb_highlevel_controller" output="screen">
+        <rosparam command="load" file="$(find smb_highlevel_controller)/config/default.yaml" />
+    </node>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-f odom -d $(find smb_highlevel_controller)/rviz/modelTFScanCloud.rviz" output="screen" />
+</launch>

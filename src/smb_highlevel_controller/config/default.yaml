@@ -1,0 +1,4 @@
+subscriber_topic: /scan
+cloud_topic: /rslidar_points
+vel_pub: /cmd_vel
+queue_size: 10
